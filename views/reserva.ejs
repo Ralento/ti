@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/calendario.css"> <!-- Asegúrate de tener este CSS -->
+    <title>Reservar Atracción</title>
+</head>
+<body>
+    <div class="reservar-container">
+        <h1>Reservar Atracción</h1>
+        <form action="/reservar" method="POST">
+            <label for="fecha">Selecciona una fecha:</label>
+            <input type="date" id="fecha" name="fecha" required>
+            <label for="atraccion">Selecciona una atracción:</label>
+            <select id="atraccion" name="atraccion_id" required>
+                <% atracciones.forEach(function(atraccion) { %>
+                    <option value="<%= atraccion.id %>"><%= atraccion.nombre %></option>
+                <% }); %>
+            </select>
+            <button type="submit">Reservar</button>
+        </form>
+    </div>
+</body>
+</html>

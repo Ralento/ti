@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <title>LOG IN</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://unicons.iconscout.com/release/v2.1.9/css/unicons.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/login.css">
+  <link rel="icon" href="favicon.ico/icono_feliz.ico" type="image/x-icon">
+</head>
+<body>
+  <section>
+    <div class="left">
+      <img src="//unsplash.it/700" alt="" />
+      <div class="sign-up">
+        <h1>SING UP  </h1>
+        <form action="/registrar" method="post">
+          <input type="text" name="usuario" placeholder="Usuario" />
+          <input type="email" name="correo" placeholder="Correo" />
+          <input type="password" name="password" placeholder="Contraseña" />
+          <input type="number" name="telefono" placeholder="Telefono" />
+          <input type="submit" value="Sing Up" />
+        </form>
+        <p>
+          Ya tienes una cuenta?
+          <a href="#" id="sign-in" onclick="toggle()">Log In.</a>
+        </p>
+      </div>
+    </div>
+    <div class="right">
+      <img src="//unsplash.it/600" />
+      <div class="sign-in">
+        <h1>Sing In</h1>
+        <form action="/entrar" method="post">
+          <input type="text" name = "usuario" placeholder="Usuario" />
+          <input type="password" name ="password" placeholder="Contraseña" />
+          <input type="submit" value="Login" />
+        </form>
+        <p>
+          No tienes una cuenta? <a href="#" onclick="toggle()">Sign Up.</a>
+        </p>
+      </div>
+    </div>
+  </section>
+</body>
+</html>
+<script>
+  function toggle() {
+    section = document.querySelector("section");
+    section.classList.toggle("active");
+  }
+  
+</script>

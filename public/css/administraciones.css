@@ -1,0 +1,82 @@
+* {
+    box-sizing: border-box; /* Asegura que el padding y el border no afecten el tamaño total */
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Asegura que el contenido esté centrado verticalmente */
+    background-color: #f0f0f0;
+    overflow: hidden; /* Evita el desplazamiento del cuerpo */
+}
+
+.calendar {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    width: 90%; /* Ancho del 90% para ser responsivo */
+    max-width: 1200px; /* Limita el ancho máximo a 1200px */
+    text-align: center;
+    overflow-y: auto; /* Permite el desplazamiento vertical */
+    height: 80vh; /* Establece una altura máxima para el calendario */
+}
+
+.month {
+    margin-bottom: 20px;
+}
+
+.controls {
+    margin-bottom: 20px;
+}
+
+.controls input {
+    padding: 5px;
+    font-size: 14px;
+}
+
+.controls button {
+    padding: 5px 10px;
+    margin-left: 5px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.calendarTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.calendarTable th, .calendarTable td {
+    border: 1px solid #ccc;
+    padding: 15px; /* Ajusta el padding para mayor espacio */
+    text-align: center;
+    font-size: 1.2em; /* Usa unidades relativas para el tamaño de la fuente */
+}
+
+.calendarTable .occupied {
+    background-color: blue;
+    color: white;
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+    .calendar {
+        padding: 10px; /* Menos padding en pantallas más pequeñas */
+    }
+
+    .calendarTable th, .calendarTable td {
+        padding: 10px; /* Ajusta el padding de celdas */
+        font-size: 1em; /* Reduce el tamaño de la fuente en pantallas pequeñas */
+    }
+}
+
+@media (max-width: 480px) {
+    .calendarTable th, .calendarTable td {
+        padding: 8px; /* Aumenta la adaptabilidad para móviles */
+        font-size: 0.9em; /* Reduce aún más el tamaño de la fuente */
+    }
+}

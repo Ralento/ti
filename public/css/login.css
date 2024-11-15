@@ -1,0 +1,168 @@
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  background: #1f2029;
+  display: grid;
+  place-content: center;
+  padding: 50px;
+}
+
+section {
+  width: 800px;
+  height: 400px;
+  display: flex;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+section.active .left {
+  transform: translateY(-400px);
+}
+
+section.active .right {
+  transform: translateY(0);
+}
+
+@media (max-width: 820px) {
+  section {
+    width: 400px;
+    flex-direction: column;
+  }
+  
+  section img {
+    display: none;
+  }
+  
+  .left {
+    transform: translateY(400px);
+  }
+  
+  section.active .left {
+    transform: translateY(0);
+  }
+  
+  section.active .right {
+    transform: translateY(-800px);
+  }
+}
+
+.left,
+.right {
+  width: 400px;
+  height: 800px;
+  background: #323442;
+  display: flex;
+  flex-direction: column;
+  transition: 1s;
+}
+
+.left img,
+.right img {
+  max-width: 100%;
+}
+
+.right {
+  transform: translateY(-400px);
+}
+
+.sign-up,
+.sign-in {
+  display: grid;
+  place-content: center;
+  width: 400px;
+  height: 400px;
+}
+
+.sign-up h1,
+.sign-in h1 {
+  margin-bottom: 20px;
+  text-align: center;
+  color: white;
+}
+
+.sign-up form,
+.sign-in form {
+  display: flex;
+  flex-direction: column;
+  width: 340px;
+  gap: 20px;
+}
+
+.sign-up input,
+.sign-in input {
+  border: 0;
+  outline: 0;
+  background: #1f2029;
+  padding: 10px 5px;
+  border-radius: 5px;
+  padding-left: 10px;
+  color: #fff;
+}
+
+.sign-up input::placeholder,
+.sign-in input::placeholder {
+  color: #ffeba7;
+  text-transform: capitalize;
+  font-weight: bold;
+}
+
+.sign-up [type="submit"],
+.sign-in [type="submit"] {
+  display: grid;
+  place-content: center;
+  max-width: fit-content;
+  padding: 0.5em 1em;
+  color: #ffeba7;
+  background: #1f2029;
+  border-radius: 5px;
+  cursor: pointer;
+  text-transform: capitalize;
+  font-size: 1.2em;
+}
+
+.sign-up p,
+.sign-in p {
+  text-transform: uppercase;
+  margin-top: 20px;
+  color: white;
+}
+
+.sign-up p a,
+.sign-in p a {
+  text-decoration: none;
+  font-weight: bold;
+  color: #ffeba7;
+}
+
+.sign-up p a:hover,
+.sign-in p a:hover {
+  color: #ffeba7;
+}
+
+.sign-up p a:visited,
+.sign-in p a:visited {
+  color: #ffeba7;
+}
+
+.left input[type="submit"] {
+  background: #1f2029;
+}
+
+.left p a {
+  color: #ffeba7;
+}
+
+.left p a:hover,
+.left p a:visited {
+  color: #ffeba7;
+}
+
+
