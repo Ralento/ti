@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href='https://unpkg.com/@fullcalendar/core/main.css' rel='stylesheet' />
-    <link href='https://unpkg.com/@fullcalendar/daygrid/main.css' rel='stylesheet' />
-    <script src='https://unpkg.com/@fullcalendar/core/main.js'></script>
-    <script src='https://unpkg.com/@fullcalendar/daygrid/main.js'></script>
+    <link href="https://cdn.jsdelivr.net/npm/@fullcalendar/core/main.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid/main.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core/main.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid/main.min.js"></script>
+    <link rel="stylesheet" href="css/calendario.css">
     <title>Calendario de Reservas</title>
     <style>
         #calendar {
@@ -24,19 +25,28 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const fechasReservadas =  JSON.stringify(reservaciones.map(res => res.fecha)) ;
+            // Datos del servidor
+            const reservaciones = JSON.parse('<%= reservaciones %>');
+            const ocupadas = JSON.parse('<%= ocupadas %>');
 
-            const eventos = fechasReservadas.map(fecha => ({
-                title: 'Reservado',
-                start: fecha,
+            // Combinar eventos
+            const eventos = ocupadas.map(res => ({
+                title: 'Ocupado',
+                start: res.fecha,
                 allDay: true,
-                color: 'blue' // Cambia el color de la fecha reservada
-            }));
+                color: 'red'
+            })).concat(reservaciones.map(res => ({
+                title: 'Reservado',
+                start: res.fecha,
+                allDay: true,
+                color: 'blue'
+            })));
 
             var calendarEl = document.getElementById('calendar');
 
+            // Inicializar calendario
             var calendar = new FullCalendar.Calendar(calendarEl, {
-                plugins: [ 'dayGrid' ],
+                plugins: ['dayGrid'],
                 initialView: 'dayGridMonth',
                 events: eventos,
                 dateClick: function(info) {
@@ -44,7 +54,6 @@
                     const atraccionId = prompt("Ingrese el ID de la atracción para reservar:");
 
                     if (atraccionId) {
-                        // Hacer una reserva
                         fetch('/reservar', {
                             method: 'POST',
                             headers: {
@@ -79,7 +88,7 @@
                         })
                         .then(response => {
                             if (response.ok) {
-                                info.event.remove(); // Eliminar el evento del calendario
+                                info.event.remove();
                                 alert('Reservación eliminada');
                             } else {
                                 alert('Error al eliminar la reservación');

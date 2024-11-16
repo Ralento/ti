@@ -83,21 +83,17 @@ app.get('/calendario', async (req, res) => {
         return res.redirect('/login');
     }
 
-    // Obtener atracciones disponibles
     const atraccionesResult = await pool.query('SELECT * FROM atracciones WHERE disponible = TRUE');
-
-    // Obtener reservaciones del usuario
     const reservacionesResult = await pool.query('SELECT fecha, atraccion_id FROM reservaciones WHERE usuario_id = $1', [req.session.user.id]);
-
-    // Obtener todas las fechas ocupadas
     const ocupadasResult = await pool.query('SELECT fecha FROM reservaciones');
 
     res.render('calendario', {
         atracciones: atraccionesResult.rows,
-        reservaciones: reservacionesResult.rows,
-        ocupadas: ocupadasResult.rows // Agregamos las fechas ocupadas
+        reservaciones: JSON.stringify(reservacionesResult.rows), // Serializar a JSON
+        ocupadas: JSON.stringify(ocupadasResult.rows) // Serializar las fechas ocupadas
     });
 });
+
 
 // Ruta para hacer una reservación
 app.get('/reservar', async (req, res) => {
