@@ -13,6 +13,7 @@
     "ejs": "^3.1.10",
     "express": "^4.21.1",
     "express-session": "^1.18.1",
+    "fullcalendar": "^6.1.15",
     "path": "^0.12.7",
     "pg": "^8.13.1"
   },
