@@ -3,23 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/calendario.css"> <!-- Asegúrate de tener este CSS -->
-    <title>Reservar Atracción</title>
+    <link rel="stylesheet" href="/css/reserva.css">
+    <title>Reservar</title>
 </head>
 <body>
     <div class="reservar-container">
         <h1>Reservar Atracción</h1>
         <form action="/reservar" method="POST">
-            <label for="fecha">Selecciona una fecha:</label>
-            <input type="date" id="fecha" name="fecha" required>
-            <label for="atraccion">Selecciona una atracción:</label>
-            <select id="atraccion" name="atraccion_id" required>
-                <% atracciones.forEach(function(atraccion) { %>
-                    <option value="<%= atraccion.id %>"><%= atraccion.nombre %></option>
-                <% }); %>
+            <label for="atraccion_id">Atracción:</label>
+            <select name="atraccion_id" required>
+                <% atracciones.forEach(atraccion => { %>
+                    <option value="<%= atraccion.id_atraccion %>"><%= atraccion.nombre %></option>
+                <% }) %>
             </select>
+
+            <label for="fecha">Fecha:</label>
+            <input type="date" name="fecha" required>
+
+            <input type="hidden" name="reservacion_id" id="reservacion_id">
+
             <button type="submit">Reservar</button>
         </form>
+
+        <h2>Reservaciones Existentes</h2>
+        <ul>
+            <% reservaciones.forEach(reservacion => { %>
+                <li>
+                    Fecha: <%= reservacion.fecha %>, Atracción ID: <%= reservacion.atraccion_id %>
+                    <form action="/eliminar-reservacion" method="POST" style="display:inline;">
+                        <input type="hidden" name="reservacion_id" value="<%= reservacion.id_reservacion %>">
+                        <button type="submit">Eliminar</button>
+                    </form>
+                    <button onclick="editReservation('<%= reservacion.id_reservacion %>, <%= reservacion.fecha %>, <%= reservacion.atraccion_id %>')">Modificar</button>
+                </li>
+            <% }) %>
+        </ul>
     </div>
+
+    <script>
+        function editReservation(id, fecha, atraccion_id) {
+            document.getElementById('reservacion_id').value = id;
+            document.querySelector('input[name="fecha"]').value = fecha;
+            document.querySelector('select[name="atraccion_id "]').value = atraccion_id;
+        }
+    </script>
 </body>
 </html>

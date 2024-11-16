@@ -3,36 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/calendario.css"> <!-- Asegúrate de tener este CSS -->
-    <title>Calendario de Reservaciones</title>
+    <link href='https://unpkg.com/@fullcalendar/core/main.css' rel='stylesheet' />
+    <link href='https://unpkg.com/@fullcalendar/daygrid/main.css' rel='stylesheet' />
+    <script src='https://unpkg.com/@fullcalendar/core/main.js'></script>
+    <script src='https://unpkg.com/@fullcalendar/daygrid/main.js'></script>
+    <title>Calendario de Reservas</title>
+    <style>
+        #calendar {
+            max-width: 900px;
+            margin: 40px auto;
+        }
+    </style>
 </head>
 <body>
-    <div class="calendar-container">
-        <h1>Calendario de Reservaciones</h1>
-        <form action="/reservar" method="POST">
-            <label for="fecha">Selecciona una fecha:</label>
-            <input type="date" id="fecha" name="fecha" required>
-            <label for="atraccion">Selecciona una atracción:</label>
-            <select id="atraccion" name="atraccion_id" required>
-                <% atracciones.forEach(function(atraccion) { %>
-                    <option value="<%= atraccion.id %>"><%= atraccion.nombre %></option>
-                <% }); %>
-            </select>
-            <button type="submit">Reservar</button>
-        </form>
-        
-        <div class="registered-dates">
-            <h2>Fechas Reservadas:</h2>
-            <% if (reservaciones.length > 0) { %>
-                <ul>
-                    <% reservaciones.forEach(function(reservacion) { %>
-                        <li><%= reservacion.fecha %> - <%= reservacion.atraccion_nombre %></li>
-                    <% }); %>
-                </ul>
-            <% } else { %>
-                <p>No hay reservaciones realizadas.</p>
-            <% } %>
-        </div>
+    <div class="calendario-container">
+        <h1>Calendario de Reservas</h1>
+        <div id="calendar"></div>
+        <button onclick="window.location.href='/menu'">Regresar al Menú</button>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const fechasReservadas =  JSON.stringify(reservaciones.map(res => res.fecha)) ;
+
+            const eventos = fechasReservadas.map(fecha => ({
+                title: 'Reservado',
+                start: fecha,
+                allDay: true,
+                color: 'blue' // Cambia el color de la fecha reservada
+            }));
+
+            var calendarEl = document.getElementById('calendar');
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                plugins: [ 'dayGrid' ],
+                initialView: 'dayGridMonth',
+                events: eventos,
+                dateClick: function(info) {
+                    const fechaSeleccionada = info.dateStr;
+                    const atraccionId = prompt("Ingrese el ID de la atracción para reservar:");
+
+                    if (atraccionId) {
+                        // Hacer una reserva
+                        fetch('/reservar', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ fecha: fechaSeleccionada, atraccion_id: atraccionId })
+                        })
+                        .then(response => {
+                            if (response.ok) {
+                                calendar.addEvent({
+                                    title: 'Reservado',
+                                    start: fechaSeleccionada,
+                                    allDay: true,
+                                    color: 'blue'
+                                });
+                                alert('Reserva realizada para el ' + fechaSeleccionada);
+                            } else {
+                                alert('Error al realizar la reserva');
+                            }
+                        });
+                    }
+                },
+                eventClick: function(info) {
+                    const reservacionId = prompt("Ingrese el ID de la reservación para eliminar:");
+                    if (reservacionId) {
+                        fetch('/eliminar-reservacion', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ reservacion_id: reservacionId })
+                        })
+                        .then(response => {
+                            if (response.ok) {
+                                info.event.remove(); // Eliminar el evento del calendario
+                                alert('Reservación eliminada');
+                            } else {
+                                alert('Error al eliminar la reservación');
+                            }
+                        });
+                    }
+                }
+            });
+
+            calendar.render();
+        });
+    </script>
 </body>
 </html>

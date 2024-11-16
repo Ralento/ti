@@ -85,13 +85,17 @@ app.get('/calendario', async (req, res) => {
 
     // Obtener atracciones disponibles
     const atraccionesResult = await pool.query('SELECT * FROM atracciones WHERE disponible = TRUE');
-    
+
     // Obtener reservaciones del usuario
-    const reservacionesResult = await pool.query('SELECT r.fecha, a.nombre AS atraccion_nombre FROM reservaciones r JOIN atracciones a ON r.atraccion_id = a.id WHERE r.usuario_id = $1', [req.session.user.id]);
+    const reservacionesResult = await pool.query('SELECT fecha, atraccion_id FROM reservaciones WHERE usuario_id = $1', [req.session.user.id]);
+
+    // Obtener todas las fechas ocupadas
+    const ocupadasResult = await pool.query('SELECT fecha FROM reservaciones');
 
     res.render('calendario', {
         atracciones: atraccionesResult.rows,
-        reservaciones: reservacionesResult.rows
+        reservaciones: reservacionesResult.rows,
+        ocupadas: ocupadasResult.rows // Agregamos las fechas ocupadas
     });
 });
 
@@ -100,28 +104,36 @@ app.get('/reservar', async (req, res) => {
     if (!req.session.user) {
         return res.redirect('/login');
     }
-    // Obtener atracciones disponibles
     const atraccionesResult = await pool.query('SELECT * FROM atracciones WHERE disponible = TRUE');
-    
-    res.render('reservar', { atracciones: atraccionesResult.rows });
+    const reservacionesResult = await pool.query('SELECT * FROM reservaciones WHERE usuario_id = $1', [req.session.user.id]);
+    res.render('reserva', { atracciones: atraccionesResult.rows, reservaciones: reservacionesResult.rows });
 });
 
 app.post('/reservar', async (req, res) => {
-    const { fecha, atraccion_id } = req.body;
+    const { fecha, atraccion_id, reservacion_id } = req.body;
     const usuario_id = req.session.user.id;
 
-    const reservar = "INSERT INTO reservaciones (usuario_id, fecha, atraccion_id) VALUES ($1, $2, $3)";
-    const params = [usuario_id, fecha, atraccion_id];
-
-    try {
+    if (reservacion_id) {
+        // Modificar una reservación existente
+        const modificar = "UPDATE reservaciones SET fecha = $1, atraccion_id = $2 WHERE id_reservacion = $3";
+        const params = [fecha, atraccion_id, reservacion_id];
+        await pool.query(modificar, params);
+    } else {
+        // Crear una nueva reservación
+        const reservar = "INSERT INTO reservaciones (usuario_id, fecha, atraccion_id) VALUES ($1, $2, $3) RETURNING *";
+        const params = [usuario_id, fecha, atraccion_id];
         await pool.query(reservar, params);
-        res.redirect('/calendario'); // Redirigir al calendario después de hacer la reservación
-    } catch (err) {
-        console.error(err);
-        res.status(500).send("Error al crear la reservación.");
     }
+
+    res.redirect('/calendario'); // Redirigir al calendario después de hacer o modificar la reservación
 });
 
+// Ruta para eliminar una reservación
+app.post('/eliminar-reservacion', async (req, res) => {
+    const { reservacion_id } = req.body;
+    await pool.query("DELETE FROM reservaciones WHERE id_reservacion = $1", [reservacion_id]);
+    res.redirect('/calendario'); // Redirigir al calendario después de eliminar la reservación
+});
 // Ruta para ver atracciones
 app.get('/atracciones', (req, res) => {
     pool.query('SELECT * FROM atracciones', (err, result) => {
